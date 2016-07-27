@@ -10,6 +10,7 @@
 #include "Definitions.h"
 #include "Actors/Spot.hpp"
 #include "Actors/Particle.hpp"
+#include "Utility.cpp"
 
 USING_NS_CC;
 
@@ -30,9 +31,12 @@ bool GameScreen::init()
     }
     
     winSize = Director::getInstance()->getWinSize();
+    Utility u;
     
     this->layerColor = new LayerColor;
-    this->layerColor->initWithColor( Color4B(70, 32, 102, 255) );
+    //this->layerColor->initWithColor( Color4B(70, 32, 102, 255) );
+    this->layerColor->initWithColor(u.getBgColor(RandomHelper::random_int(0,BGColors-1)));
+    //this->layerColor->initWithColor(bgColors[0]);
     this->addChild(this->layerColor, 1);
     
     //intialize the spot
@@ -117,7 +121,7 @@ void GameScreen::addParticle()
 
 void GameScreen::initSpot ( )
 {
-    spot  = Spot::create("img/ball1.png");
+    spot  = Spot::create("cw.png");
     spot->setPosition(winSize.width/4, winSize.height/4);
     this->addChild(spot,2);
 }

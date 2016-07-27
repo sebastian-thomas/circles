@@ -18,7 +18,7 @@ Particle::~Particle() {}
 Particle* Particle::create()
 {
     Particle *pSprite = new Particle();
-    if (pSprite->initWithFile("img/ball1.png"))
+    if (pSprite->initWithFile("cw.png"))
     {
         pSprite->autorelease();
         pSprite->initWithOptions();

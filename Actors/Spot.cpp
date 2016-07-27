@@ -36,6 +36,7 @@ void Spot::initOptions()
     winSize = Director::getInstance()->getWinSize();
     defSize = (SPOT_SIZE * winSize.y)/(100*2);
     currSize = defSize;
+    this->swiped = false;
     
     this->setAnchorPoint(Vec2(0.5,0.5));
     float scale = (SPOT_SIZE* winSize.x)/(this->getContentSize().width * 100);
@@ -98,6 +99,7 @@ void Spot::onTouchesMoved(const std::vector<Touch*>& touches, Event* event)
         {
             Point p = this->getInScreenPoint(this->touchToPoint(touch) + this->touchOffset);
             this->setPosition(p);
+            this->swiped = true;
         }
         
     }

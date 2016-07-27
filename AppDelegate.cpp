@@ -2,6 +2,7 @@
 #include "HelloWorldScene.h"
 #include "GameScreen.h"
 #include "Definitions.h"
+#include "Screens/MenuScreen.hpp"
 
 USING_NS_CC;
 
@@ -28,7 +29,8 @@ bool AppDelegate::applicationDidFinishLaunching() {
         //glview->setDesignResolutionSize(APP_WIDTH, APP_HEIGHT, kResolutionFixedHeight);
     }
     
-    auto scene = GameScreen::createScene();
+    //auto scene = GameScreen::createScene();
+    auto scene = MenuScreen::createScene();
     director->runWithScene(scene);
     
     return true;

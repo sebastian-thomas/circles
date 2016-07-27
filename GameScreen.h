@@ -23,7 +23,6 @@ public:
     CREATE_FUNC(GameScreen);
     
     void update(float) override;
-    
 private:
     
     Size winSize;
@@ -32,7 +31,7 @@ private:
     Spot *spot;
     Vector<Particle *> particles;
     Vector<Slicer *> slicers;
-    
+        
     void initSpot();
     void initParticles();
     void addSlicer();

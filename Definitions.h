@@ -24,4 +24,6 @@
 #define SMIN 3 //100 is full size
 #define SMAX 10
 
+#define BGColors 3
+
 #endif /* Definitions_h */

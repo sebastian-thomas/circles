@@ -26,6 +26,8 @@ private:
     int defSize;
     int currSize;
     cocos2d::Vec2 winSize;
+    bool swiped;
+
     
     void setToRadius(int r);
     void initOptions();
