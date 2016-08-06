@@ -1,7 +1,7 @@
 #include "AppDelegate.h"
-#include "HelloWorldScene.h"
-#include "GameScreen.h"
 #include "Definitions.h"
+#include "HelloWorldScene.h"
+#include "Screens/GameScreen.h"
 #include "Screens/MenuScreen.hpp"
 
 USING_NS_CC;

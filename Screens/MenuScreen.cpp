@@ -7,10 +7,12 @@
 //
 
 #include "MenuScreen.hpp"
+#include "cocos2d.h"
+
+#include "Definitions.h"
 #include "GameScreen.h"
 #include "ui/CocosGUI.h"
-#include "Definitions.h"
-#include "../Utility.cpp"
+#include "../OUtility.h"
 
 USING_NS_CC;
 
@@ -33,38 +35,43 @@ bool MenuScreen::init()
     }
     
     auto winSize = Director::getInstance()->getWinSize();
-    Utility u;
+    OUtility u;
+    
+    this->setKeyboardEnabled(true);
     
     auto layerColor = new LayerColor;
     layerColor->initWithColor(u.getBgColor(RandomHelper::random_int(0,BGColors-1)));
     this->addChild(layerColor, 1);
     
-    auto label = Label::createWithSystemFont("otap", "Arial", 96);
-    label->setAnchorPoint(cocos2d::Vec2(0.5f, 0.5f));
-    label->setPosition(winSize.width/2, winSize.height*0.75);
-    this->addChild(label, 2);
-    
-   
-    
-    auto play = Label::createWithSystemFont("play", "Arial", 96);
-    play->setAnchorPoint(cocos2d::Vec2(0.5f, 0.5f));
-    play->setPosition(winSize.width/2, winSize.height*0.25);
-    //this->addChild(play, 2);
-    
-    
     Vector<MenuItem*> menuItems;
+
     
     auto playItem = MenuItemImage::create("play-button.png", "play-button.png",
                                           CC_CALLBACK_1(MenuScreen::startGame, this));
     //playItem->setContentSize(Size(winSize.width/3,winSize.width/3));
-    playItem->setScale(winSize.width/(4*playItem->getContentSize().width));
-    playItem->setAnchorPoint(Vec2(0.5f,0.5f));
+    playItem->setScale(winSize.width/(3*playItem->getContentSize().width));
+    playItem->setAnchorPoint(Vec2(0.5f,0.0f));
     playItem->setPosition(winSize.width/2, winSize.height/4);
     menuItems.pushBack(playItem);
     auto menu = Menu::createWithArray(menuItems);
     menu->setPosition(Vec2(0,0));
     this->addChild(menu,2);
+    
+    auto nameLabel = ui::Text::create("Circles", "Circular Abstracts.ttf", 124);
+    nameLabel->setTextHorizontalAlignment(TextHAlignment::CENTER);
+    nameLabel->setAnchorPoint(Vec2(0.5f,0.5f));
+    nameLabel->setScale(3*winSize.width/(nameLabel->getContentSize().width * 4));
+    nameLabel->setPosition(Vec2(winSize.width/2,0.75*winSize.height));
+    nameLabel->setColor(Color3B(255,255,255));
+    
+    this->addChild(nameLabel,2);
+    
     return true;
+}
+
+void MenuScreen::onKeyReleased( cocos2d::EventKeyboard::KeyCode keycode, cocos2d::Event *event)
+{
+    Director::getInstance()->end();
 }
 
 void MenuScreen::startGame(CCObject* pSender)

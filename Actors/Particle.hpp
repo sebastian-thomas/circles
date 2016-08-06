@@ -20,11 +20,13 @@ public:
     
     static Particle *create();
     int getRadius();
+    int getScore();
     
 private:
     cocos2d::Vec2 winSize;
     int minSize, maxSize;
     int r;
+    int score;
     
     void initWithOptions();
 };

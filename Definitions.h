@@ -12,6 +12,9 @@
 #define APP_WIDTH 540
 #define APP_HEIGHT 960
 
+//Levels
+#define NUMLEVEL 10
+
 //spot dims
 #define SPOT_SIZE 10 //100 is full width
 
@@ -24,6 +27,6 @@
 #define SMIN 3 //100 is full size
 #define SMAX 10
 
-#define BGColors 3
+#define BGColors 4
 
 #endif /* Definitions_h */

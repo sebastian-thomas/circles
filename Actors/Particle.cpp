@@ -35,7 +35,11 @@ void Particle::initWithOptions()
     minSize = PMIN * winSize.x / 100;
     maxSize = PMAX * winSize.x / 100;
     
-    int sz = RandomHelper::random_int(minSize, maxSize);
+    int pSize = RandomHelper::random_int(PMIN,PMAX);
+    int sz = pSize * winSize.x / 100;
+    score = pSize - PMIN + 1;
+    
+    //int sz = RandomHelper::random_int(minSize, maxSize);
     r = sz/2;
     int xPos = RandomHelper::random_int(sz, (int) winSize.x - sz);
     int yPos = RandomHelper::random_int(sz, (int) winSize.y - sz);
@@ -50,6 +54,11 @@ void Particle::initWithOptions()
     auto sequence = Sequence::create(scaleBy2, scaleBy1, NULL);
     
     this->runAction(RepeatForever::create(sequence));
+}
+
+int Particle::getScore()
+{
+    return score;
 }
 
 int Particle::getRadius()

@@ -22,6 +22,7 @@ public:
     
 private:
     void startGame(cocos2d::CCObject* pSender);
+    void onKeyReleased( cocos2d::EventKeyboard::KeyCode keycode, cocos2d::Event *event);
 };
 
 #endif /* MenuScreen_hpp */
