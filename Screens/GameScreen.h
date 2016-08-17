@@ -22,15 +22,17 @@ USING_NS_CC;
 class GameScreen : public cocos2d::Layer
 {
 public:
-    static cocos2d::Scene* createScene();
+    static cocos2d::Scene* createScene(int numtry);
     virtual bool init();
     CREATE_FUNC(GameScreen);
+    static int numtry;
     
     void update(float) override;
 private:
     
     int score;
     int level;
+    int colorIndex;
     ui::Text *levelLabel;
     ui::LoadingBar *levelScoreBar;
     OUtility u;
@@ -48,7 +50,7 @@ private:
     void addSlicer();
     void addParticle();
     void addKillerCircle();
-    void resetKillerCircles();
+    void setKillerCircles();
     
     void addScore(int s);
 };

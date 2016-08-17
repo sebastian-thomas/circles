@@ -18,8 +18,11 @@
 
 USING_NS_CC;
 
-Scene* GameScreen::createScene()
+int GameScreen::numtry;
+
+Scene* GameScreen::createScene(int numtry)
 {
+    GameScreen::numtry = numtry;
     auto scene = Scene::create();
     auto layer = GameScreen::create();
     scene->addChild (layer);
@@ -55,9 +58,10 @@ bool GameScreen::init()
     levelScoreBar->setPercent(0.0f);
     
     
-    
+    //this->colorIndex = RandomHelper::random_int(0,BGColors-1);
+    this->colorIndex = 0;
     this->layerColor = new LayerColor;
-    this->layerColor->initWithColor(u.getBgColor(RandomHelper::random_int(0,BGColors-1)));
+    this->layerColor->initWithColor(u.getBgColor(colorIndex));
     this->addChild(this->layerColor, 1);
     
     this->addChild(levelLabel,3);
@@ -67,7 +71,7 @@ bool GameScreen::init()
     initSpot();
     initParticles();
     addSlicer();
-    addKillerCircle();
+    //addKillerCircle();
     this->scheduleUpdate();
     return true;
 }
@@ -84,7 +88,7 @@ void GameScreen::update(float dt)
         else if( s->getBoundingBox().intersectsRect(spot->getBoundingBox()))
         {
             //CCLOG("Game Over");
-            auto scene = GameOverScreen::createScene(level);
+            auto scene = GameOverScreen::createScene(level, GameScreen::numtry);
             Director::getInstance()->replaceScene(scene);
         }
     }
@@ -100,7 +104,7 @@ void GameScreen::update(float dt)
             }
             else
             {
-                auto scene = GameOverScreen::createScene(level);
+                auto scene = GameOverScreen::createScene(level,GameScreen::numtry);
                 Director::getInstance()->replaceScene(scene);
             }
             kctoDelete.pushBack(kc);
@@ -150,6 +154,14 @@ void GameScreen::addScore(int s)
     if (score >= u.getLevelScoreNeeded(level)){
         score = 0;
         level++;
+        colorIndex = (colorIndex + 1 ) % BGColors;
+        Color3B c = Color3B(u.getBgColor(colorIndex).r,u.getBgColor(colorIndex).g,u.getBgColor(colorIndex).b);
+        layerColor->setColor(c);
+        int numKC = u.getNumKillerCircles(level) - u.getNumKillerCircles(level -1);
+        for(int i=0; i < numKC; ++i)
+        {
+            addKillerCircle();
+        }
     }
     levelLabel->setText(u.scoreAsStr(level));
     float percent = score/(float)u.getLevelScoreNeeded(level);
@@ -179,7 +191,7 @@ void GameScreen::initParticles()
     
 }
 
-void GameScreen::resetKillerCircles()
+void GameScreen::setKillerCircles()
 {
     int num = u.getNumKillerCircles(level);
 }
@@ -201,7 +213,7 @@ void GameScreen::addParticle()
 void GameScreen::initSpot ( )
 {
     spot  = Spot::create("wcircle.png");
-    spot->setPosition(winSize.width/4, winSize.height/4);
+    spot->setPosition(winSize.width/2, winSize.height/2);
     this->addChild(spot,2);
 }
 

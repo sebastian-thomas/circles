@@ -4,6 +4,8 @@
 #include "Screens/GameScreen.h"
 #include "Screens/MenuScreen.hpp"
 
+#include "PluginFacebook/PluginFacebook.h"
+
 USING_NS_CC;
 
 AppDelegate::AppDelegate() {
@@ -15,6 +17,7 @@ AppDelegate::~AppDelegate()
 }
 
 bool AppDelegate::applicationDidFinishLaunching() {
+    sdkbox::PluginFacebook::init();
     auto director = Director::getInstance();
     auto glview = director->getOpenGLView();
     if(!glview) {

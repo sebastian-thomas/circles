@@ -40,7 +40,8 @@ bool MenuScreen::init()
     this->setKeyboardEnabled(true);
     
     auto layerColor = new LayerColor;
-    layerColor->initWithColor(u.getBgColor(RandomHelper::random_int(0,BGColors-1)));
+    //layerColor->initWithColor(u.getBgColor(RandomHelper::random_int(0,BGColors-1)));
+    layerColor->initWithColor(u.getBgColor(0));
     this->addChild(layerColor, 1);
     
     Vector<MenuItem*> menuItems;
@@ -49,7 +50,7 @@ bool MenuScreen::init()
     auto playItem = MenuItemImage::create("play-button.png", "play-button.png",
                                           CC_CALLBACK_1(MenuScreen::startGame, this));
     //playItem->setContentSize(Size(winSize.width/3,winSize.width/3));
-    playItem->setScale(winSize.width/(3*playItem->getContentSize().width));
+    playItem->setScale(winSize.width/(4*playItem->getContentSize().width));
     playItem->setAnchorPoint(Vec2(0.5f,0.0f));
     playItem->setPosition(winSize.width/2, winSize.height/4);
     menuItems.pushBack(playItem);
@@ -76,6 +77,6 @@ void MenuScreen::onKeyReleased( cocos2d::EventKeyboard::KeyCode keycode, cocos2d
 
 void MenuScreen::startGame(CCObject* pSender)
 {
-    auto scene = GameScreen::createScene();
+    auto scene = GameScreen::createScene(1);
     Director::getInstance()->replaceScene(scene);
 }

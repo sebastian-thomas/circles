@@ -45,10 +45,12 @@ int OUtility::getLevelScoreNeeded(int level)
 
 void OUtility::initBgColors()
 {
-    bgColors[0] = Color4B(70,  32, 102, 255);
-    bgColors[1] = Color4B(255,  122, 90, 255);
-    bgColors[2] = Color4B(0,  170, 160, 255);
-    bgColors[3] = Color4B(201,  0, 93, 255);
+    bgColors[0] = Color4B(255,  122, 90, 255);
+    bgColors[1] = Color4B(0,  170, 160, 255);
+    bgColors[2] = Color4B(201,  0, 93, 255);
+    bgColors[3] = Color4B(255,  191, 0, 255);
+    bgColors[4] = Color4B(251,  115, 116, 255);
+    bgColors[5] = Color4B(163,  27, 196, 255);
 }
 
 

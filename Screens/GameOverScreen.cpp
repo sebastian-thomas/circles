@@ -14,14 +14,18 @@
 #include "../Definitions.h"
 #include "../OUtility.h"
 
+#include "PluginFacebook/PluginFacebook.h"
+
 USING_NS_CC;
 
 int GameOverScreen::score;
+int GameOverScreen::numtried;
 
-Scene* GameOverScreen::createScene(int s)
+Scene* GameOverScreen::createScene(int s, int numtried)
 {
     // 'scene' is an autorelease object
     GameOverScreen::score = s;
+    GameOverScreen::numtried = numtried;
     auto scene = Scene::create();
     auto layer = GameOverScreen::create();
     scene->addChild(layer);
@@ -61,10 +65,29 @@ bool GameOverScreen::init()
     auto playItem = MenuItemImage::create("replay.png", "replay.png",
                                           CC_CALLBACK_1(GameOverScreen::startGame, this));
     //playItem->setContentSize(Size(winSize.width/3,winSize.width/3));
-    playItem->setScale(winSize.width/(3*playItem->getContentSize().width));
+    playItem->setScale(winSize.width/(4*playItem->getContentSize().width));
     playItem->setAnchorPoint(Vec2(0.5f,0.5f));
-    playItem->setPosition(winSize.width/2, winSize.height/3);
-    menuItems.pushBack(playItem);
+    
+    
+    auto fbReplayItem = MenuItemImage::create("replayfb.png", "replayfb.png",
+                                          CC_CALLBACK_1(GameOverScreen::inviteFbFriend, this));
+    //playItem->setContentSize(Size(winSize.width/3,winSize.width/3));
+    fbReplayItem->setScale(winSize.width/(4*playItem->getContentSize().width));
+    fbReplayItem->setAnchorPoint(Vec2(0.5f,0.5f));
+    fbReplayItem->setPosition(winSize.width*0.75, winSize.height/3);
+    
+    if ( GameOverScreen::numtried > 1)
+    {
+        playItem->setPosition(winSize.width*0.5, winSize.height/3);
+        menuItems.pushBack(playItem);
+    }
+    else
+    {
+        playItem->setPosition(winSize.width*0.25, winSize.height/3);
+        menuItems.pushBack(playItem);
+        menuItems.pushBack(fbReplayItem);
+    }
+    
     
     auto scoreLabel = ui::Text::create(u.scoreAsStr(GameOverScreen::score), "Circular Abstracts.ttf", 248);
     scoreLabel->setAnchorPoint(Vec2(0.5f,0.5f));
@@ -81,13 +104,40 @@ bool GameOverScreen::init()
     highScoreLabel->setPosition(Vec2(winSize.width/2, 0.75*winSize.height - 0.2*winSize.height));
     highScoreLabel->setColor(Color3B(255,255,255));
     
+    auto reviveFBLabel = ui::Text::create("Invite a friend and Revive", "Circular Abstracts.ttf", 124);
+    reviveFBLabel->setAnchorPoint(Vec2(0.5f,1.0f));
+    reviveFBLabel->setScale(winSize.width/(reviveFBLabel->getContentSize().width * 3));
+    reviveFBLabel->setPosition(Vec2(winSize.width/2, 0.25*winSize.height));
+    reviveFBLabel->setColor(Color3B(255,255,255));
+    reviveFBLabel->addTouchEventListener(CC_CALLBACK_1(GameOverScreen::inviteFbFriend, this));
+    
     auto menu = Menu::createWithArray(menuItems);
     menu->setPosition(Vec2(0,0));
     
     this->addChild(menu,2);
     this->addChild(scoreLabel,2);
     this->addChild(highScoreLabel,2);
+    //this->addChild(reviveFBLabel,2);
     return true;
+}
+
+void GameOverScreen::inviteFbFriend(CCObject* pSender)
+{
+    CCLOG("invite fiend");
+    //auto scene = GameScreen::createScene(GameOverScreen::numtried + 1);
+    //Director::getInstance()->replaceScene(scene);
+    
+    if(!sdkbox::PluginFacebook::isLoggedIn())
+    {
+        sdkbox::PluginFacebook::login();
+        sdkbox::PluginFacebook::requestReadPermissions({sdkbox::FB_PERM_READ_PUBLIC_PROFILE, sdkbox::FB_PERM_READ_USER_FRIENDS});
+
+    }
+    else{
+        sdkbox::PluginFacebook::inviteFriends(
+                                              "https://fb.me/322164761287181",
+                                              "http://www.cocos2d-x.org/attachments/801/cocos2dx_portrait.png");
+    }
 }
 
 void GameOverScreen::onKeyReleased( cocos2d::EventKeyboard::KeyCode keycode, cocos2d::Event *event)
@@ -97,7 +147,7 @@ void GameOverScreen::onKeyReleased( cocos2d::EventKeyboard::KeyCode keycode, coc
 
 void GameOverScreen::startGame(CCObject* pSender)
 {
-    auto scene = GameScreen::createScene();
+    auto scene = GameScreen::createScene(1);
     Director::getInstance()->replaceScene(scene);
 }
 
@@ -105,3 +155,29 @@ void GameOverScreen::setScore(int s)
 {
     score = s;
 }
+
+void GameOverScreen::onLogin(bool isLogin, const std::string& msg)
+{
+    sdkbox::PluginFacebook::inviteFriends(
+                                          "https://fb.me/322164761287181",
+                                          "http://www.cocos2d-x.org/attachments/801/cocos2dx_portrait.png");
+}
+void GameOverScreen::onSharedSuccess(const std::string& message){}
+void GameOverScreen::onSharedFailed(const std::string& message){}
+void GameOverScreen::onSharedCancel(){}
+void GameOverScreen::onAPI(const std::string& key, const std::string& jsonData){}
+void GameOverScreen::onPermission(bool isLogin, const std::string& msg){}
+void GameOverScreen::onFetchFriends(bool ok, const std::string& msg){}
+void GameOverScreen::onRequestInvitableFriends( const sdkbox::FBInvitableFriendsInfo& friends ){}
+void GameOverScreen::onInviteFriendsWithInviteIdsResult( bool result, const std::string& msg ){}
+void GameOverScreen::onInviteFriendsResult( bool result, const std::string& msg )
+{
+    CCLOG(" on invite friend result aah");
+    if(result)
+    {
+        auto scene = GameScreen::createScene(GameOverScreen::numtried + 1);
+        Director::getInstance()->replaceScene(scene);
+    }
+    
+}
+void GameOverScreen::onGetUserInfo( const sdkbox::FBGraphUser& userInfo ){}
