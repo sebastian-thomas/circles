@@ -65,7 +65,15 @@ bool MenuScreen::init()
     nameLabel->setPosition(Vec2(winSize.width/2,0.75*winSize.height));
     nameLabel->setColor(Color3B(255,255,255));
     
+    auto myAppLabel = ui::Text::create(".myAppStack()", "courier.ttf", 124);
+    myAppLabel->setTextHorizontalAlignment(TextHAlignment::CENTER);
+    myAppLabel->setAnchorPoint(Vec2(0.5f,0.0f));
+    myAppLabel->setScale(winSize.width/(myAppLabel->getContentSize().width * 5));
+    myAppLabel->setPosition(Vec2(winSize.width/2,0));
+    myAppLabel->setColor(Color3B(255,255,255));
+    
     this->addChild(nameLabel,2);
+    this->addChild(myAppLabel,2);
     
     return true;
 }
@@ -77,6 +85,6 @@ void MenuScreen::onKeyReleased( cocos2d::EventKeyboard::KeyCode keycode, cocos2d
 
 void MenuScreen::startGame(CCObject* pSender)
 {
-    auto scene = GameScreen::createScene(1);
+    auto scene = GameScreen::createScene(1,0);
     Director::getInstance()->replaceScene(scene);
 }

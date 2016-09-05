@@ -19,10 +19,12 @@
 USING_NS_CC;
 
 int GameScreen::numtry;
+int GameScreen::level;
 
-Scene* GameScreen::createScene(int numtry)
+Scene* GameScreen::createScene(int numtry, int level)
 {
     GameScreen::numtry = numtry;
+    GameScreen::level = level;
     auto scene = Scene::create();
     auto layer = GameScreen::create();
     scene->addChild (layer);
@@ -39,14 +41,14 @@ bool GameScreen::init()
     
     winSize = Director::getInstance()->getWinSize();
     
-    this->score = 0;
-    this->level = 0;
+    //this->score = 0;
+    //this->level = 0;
     
-    this->levelLabel = ui::Text::create(u.scoreAsStr(this->score), "Circular Abstracts.ttf", 128);
-    this->levelLabel->setScale(winSize.width/(this->levelLabel->getContentSize().width*10));
-    this->levelLabel->setAnchorPoint(Vec2(0.0f,0.0f));
-    this->levelLabel->setPosition(Vec2(2,2));
-    this->levelLabel->setColor(Color3B(255,255,255));
+    levelLabel = ui::Text::create(u.scoreAsStr(GameScreen::level), "Circular Abstracts.ttf", 128);
+    levelLabel->setScale(winSize.width/(levelLabel->getContentSize().width*10));
+    levelLabel->setAnchorPoint(Vec2(0.0f,0.0f));
+    levelLabel->setPosition(Vec2(3,2));
+    levelLabel->setColor(Color3B(255,255,255));
     
     levelScoreBar = ui::LoadingBar::create("progressbar.png");
     //levelScoreBar->setDirection(ui::LoadingBar::Direction::RIGHT);
@@ -64,15 +66,24 @@ bool GameScreen::init()
     this->layerColor->initWithColor(u.getBgColor(colorIndex));
     this->addChild(this->layerColor, 1);
     
-    this->addChild(levelLabel,3);
-    this->addChild(levelScoreBar,3);
+    
     
     //intialize the spot
     initSpot();
     initParticles();
     addSlicer();
+    
+    int numKC = u.getNumKillerCircles(level);
+    for(int i=0; i < numKC; ++i)
+    {
+        addKillerCircle();
+    }
+    
+    
     //addKillerCircle();
     this->scheduleUpdate();
+    this->addChild(levelLabel,3);
+    this->addChild(levelScoreBar,3);
     return true;
 }
 
@@ -154,7 +165,10 @@ void GameScreen::addScore(int s)
     if (score >= u.getLevelScoreNeeded(level)){
         score = 0;
         level++;
-        colorIndex = (colorIndex + 1 ) % BGColors;
+        if(level % 10 == 0)
+        {
+            colorIndex = (colorIndex + 1 ) % BGColors;
+        }
         Color3B c = Color3B(u.getBgColor(colorIndex).r,u.getBgColor(colorIndex).g,u.getBgColor(colorIndex).b);
         layerColor->setColor(c);
         int numKC = u.getNumKillerCircles(level) - u.getNumKillerCircles(level -1);

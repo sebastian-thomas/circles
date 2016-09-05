@@ -40,14 +40,18 @@ bool GameOverScreen::init()
         return false;
     }
     
+    sdkbox::PluginFacebook::setListener(this);
+    
     auto winSize = Director::getInstance()->getWinSize();
     OUtility u;
     
     this->setKeyboardEnabled(true);
     
     UserDefault *userDefault = UserDefault::getInstance();
+    
     //reset high score
     //userDefault->setIntegerForKey("HIGHSCORE", 0);
+    
     auto highScore = userDefault->getIntegerForKey("HIGHSCORE", 0);
     if(GameOverScreen::score > highScore)
     {
@@ -135,8 +139,13 @@ void GameOverScreen::inviteFbFriend(CCObject* pSender)
     }
     else{
         sdkbox::PluginFacebook::inviteFriends(
-                                              "https://fb.me/322164761287181",
-                                              "http://www.cocos2d-x.org/attachments/801/cocos2dx_portrait.png");
+                                              "https://fb.me/1783355538608915",
+                                              "http://myappstack.com/img/circles/fg.png");
+         
+        //auto scene = GameScreen::createScene(GameOverScreen::numtried + 1, score);
+        //Director::getInstance()->replaceScene(scene);
+         
+        //sdkbox::PluginFacebook::logout();
     }
 }
 
@@ -147,7 +156,13 @@ void GameOverScreen::onKeyReleased( cocos2d::EventKeyboard::KeyCode keycode, coc
 
 void GameOverScreen::startGame(CCObject* pSender)
 {
-    auto scene = GameScreen::createScene(1);
+    auto scene = GameScreen::createScene(1,0);
+    Director::getInstance()->replaceScene(scene);
+}
+
+void GameOverScreen::continueGame()
+{
+    auto scene = GameScreen::createScene(GameOverScreen::numtried + 1, GameOverScreen::score);
     Director::getInstance()->replaceScene(scene);
 }
 
@@ -159,8 +174,8 @@ void GameOverScreen::setScore(int s)
 void GameOverScreen::onLogin(bool isLogin, const std::string& msg)
 {
     sdkbox::PluginFacebook::inviteFriends(
-                                          "https://fb.me/322164761287181",
-                                          "http://www.cocos2d-x.org/attachments/801/cocos2dx_portrait.png");
+                                          "https://fb.me/1783355538608915",
+                                          "http://myappstack.com/img/circles/fg.png");
 }
 void GameOverScreen::onSharedSuccess(const std::string& message){}
 void GameOverScreen::onSharedFailed(const std::string& message){}
@@ -172,11 +187,15 @@ void GameOverScreen::onRequestInvitableFriends( const sdkbox::FBInvitableFriends
 void GameOverScreen::onInviteFriendsWithInviteIdsResult( bool result, const std::string& msg ){}
 void GameOverScreen::onInviteFriendsResult( bool result, const std::string& msg )
 {
-    CCLOG(" on invite friend result aah");
+    CCLOG(" on invite friend result aah %d", result);
     if(result)
     {
-        auto scene = GameScreen::createScene(GameOverScreen::numtried + 1);
-        Director::getInstance()->replaceScene(scene);
+        auto callbackContinue = CallFunc::create([this](){
+            continueGame();
+        });
+        auto delay = DelayTime::create(1.0f);
+        auto sequence = Sequence::create( delay,callbackContinue,nullptr);
+        this->runAction(sequence);
     }
     
 }
