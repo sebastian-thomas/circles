@@ -60,7 +60,8 @@ bool GameOverScreen::init()
     }
     
     auto layerColor = new LayerColor;
-    layerColor->initWithColor(u.getBgColor(RandomHelper::random_int(0,BGColors-1)));
+    //layerColor->initWithColor(u.getBgColor(RandomHelper::random_int(0,BGColors-1)));
+    layerColor->initWithColor(Color4B(94,  94, 94, 255));
     this->addChild(layerColor, 1);
     
     Vector<MenuItem*> menuItems;

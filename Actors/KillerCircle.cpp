@@ -59,6 +59,7 @@ void KillerCircle::spawnKillerCircle(int sz)
     //this->runAction(fadeIn);
     float initalSize = sz/10;
     
+    isWhiteSprite = true;
     innerSprite = Sprite::create("bcircle.png");
     innerSprite->setAnchorPoint(Vec2(0.5f,0.5f));
     innerSprite->setPosition(0,0);

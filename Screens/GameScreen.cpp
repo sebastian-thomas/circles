@@ -44,6 +44,7 @@ bool GameScreen::init()
     //this->score = 0;
     //this->level = 0;
     
+    
     levelLabel = ui::Text::create(u.scoreAsStr(GameScreen::level), "Circular Abstracts.ttf", 128);
     levelLabel->setScale(winSize.width/(levelLabel->getContentSize().width*10));
     levelLabel->setAnchorPoint(Vec2(0.0f,0.0f));
@@ -71,7 +72,6 @@ bool GameScreen::init()
     //intialize the spot
     initSpot();
     initParticles();
-    addSlicer();
     
     int numKC = u.getNumKillerCircles(level);
     for(int i=0; i < numKC; ++i)
@@ -79,6 +79,18 @@ bool GameScreen::init()
         addKillerCircle();
     }
     
+    UserDefault *userDefault = UserDefault::getInstance();
+    auto appLaunches = userDefault->getIntegerForKey("APPLAUNCH1", 0);
+    if(appLaunches == 0)
+    {
+        showHelpText("Drag solid circle to eat hollows");
+    }
+    else
+    {
+        //no need of slicer when particles are updated
+        addSlicer();
+    }
+    userDefault->setIntegerForKey("APPLAUNCH1", appLaunches + 1);
     
     //addKillerCircle();
     this->scheduleUpdate();
@@ -183,6 +195,53 @@ void GameScreen::addScore(int s)
     //CCLOG("percent %f , score %d, fromLevel %d",percent,score, u.getLevelScoreNeeded(level) );
     levelScoreBar->setPercent(percent);
 
+}
+
+void GameScreen::showHelpText(std::string msg)
+{
+    helpLabel = ui::Text::create(msg, "courier.ttf", 64);
+    helpLabel->setScale(0.95*winSize.width/(helpLabel->getContentSize().width));
+    helpLabel->setAnchorPoint(Vec2(0.5f,1.0f));
+    helpLabel->setPosition(Vec2(winSize.width/2, winSize.height - winSize.height/100 - 4));
+    helpLabel->setColor(Color3B(255,255,255));
+    helpLabel->setOpacity(0.0f);
+    this->addChild(helpLabel,3);
+    
+    auto fadeIn = FadeIn::create(1.0f);
+    auto fadeOut = FadeOut::create(1.0f);
+    auto delay = DelayTime::create(2.0f);
+    
+    auto hitOnlyWhite = CallFunc::create([&](){
+        changeText("Don't hit on black things.");
+    });
+    
+    auto tapSize = CallFunc::create([&](){
+        changeText("Tap solid cirlce to reduce size.");
+    });
+    
+    auto newThings = CallFunc::create([&](){
+        changeText("Watch out for new objects.");
+    });
+    
+    auto addSlicerCall = CallFunc::create([&](){
+        addSlicer();
+    });
+
+
+    
+    auto seq = Sequence::create(fadeIn, delay, fadeOut,
+                                hitOnlyWhite, fadeIn, delay, fadeOut,
+                                tapSize,      fadeIn, delay, fadeOut,
+                                newThings,    fadeIn, delay, fadeOut,
+                                addSlicerCall, nullptr);
+    helpLabel->runAction(seq);
+
+}
+
+void GameScreen::changeText(std::string msg)
+{
+    helpLabel->setText(msg);
+    helpLabel->setScale(0.95*winSize.width/(helpLabel->getContentSize().width));
 }
 
 void GameScreen::addSlicer()

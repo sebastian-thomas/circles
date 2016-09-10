@@ -34,6 +34,7 @@ private:
     int score;
     int colorIndex;
     ui::Text *levelLabel;
+    ui::Text* helpLabel;
     ui::LoadingBar *levelScoreBar;
     OUtility u;
     
@@ -51,6 +52,10 @@ private:
     void addParticle();
     void addKillerCircle();
     void setKillerCircles();
+    
+    void showHelpText(std::string msg);
+    
+    void changeText(std::string msg);
     
     void addScore(int s);
 };
