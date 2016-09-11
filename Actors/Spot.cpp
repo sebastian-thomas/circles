@@ -37,6 +37,7 @@ void Spot::initOptions()
     defSize = (SPOT_SIZE * winSize.y)/(100*2);
     currSize = defSize;
     this->swiped = false;
+    this->play = true;
     
     this->setAnchorPoint(Vec2(0.5,0.5));
     float scale = (SPOT_SIZE* winSize.x)/(this->getContentSize().width * 100);
@@ -68,6 +69,11 @@ void Spot::addArea(int r)
     this->setToRadius(newRad);
 }
 
+void Spot::stopPlay()
+{
+    this->play = false;
+}
+
 void Spot::reduceSize()
 {
     this->runAction(ScaleBy::create(0.3f, 0.9f));
@@ -82,7 +88,7 @@ void Spot::onTouchesBegan(const std::vector<Touch*>& touches, Event* event)
     for( auto touch : touches )
     {
         // if this touch is within our sprite's boundary
-        if( touch && this->isTouchingSpot(touch) )
+        if(play && touch && this->isTouchingSpot(touch) )
         {
             // calculate offset from sprite to touch point
             this->touchOffset = this->getPosition() - this->touchToPoint(touch);
@@ -95,7 +101,7 @@ void Spot::onTouchesMoved(const std::vector<Touch*>& touches, Event* event)
     for( auto touch : touches )
     {
         // set the new sprite position
-        if( touch && touchOffset.x && touchOffset.y )
+        if( play && touch && touchOffset.x && touchOffset.y )
         {
             Point p = this->getInScreenPoint(this->touchToPoint(touch) + this->touchOffset);
             this->setPosition(p);
@@ -109,7 +115,7 @@ void Spot::onTouchesEnded(const std::vector<Touch*>& touches, Event* event)
 {
     for( auto touch : touches )
     {
-        if( touch && touchOffset.x && touchOffset.y  )
+        if( play && touch && touchOffset.x && touchOffset.y  )
         {
             // set the new sprite position
             Point p = this->getInScreenPoint(this->touchToPoint(touch) + this->touchOffset);

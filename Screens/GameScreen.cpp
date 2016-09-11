@@ -61,8 +61,8 @@ bool GameScreen::init()
     levelScoreBar->setPercent(0.0f);
     
     
-    //this->colorIndex = RandomHelper::random_int(0,BGColors-1);
-    this->colorIndex = 0;
+    this->colorIndex = RandomHelper::random_int(0,BGColors-1);
+    //this->colorIndex = 0;
     this->layerColor = new LayerColor;
     this->layerColor->initWithColor(u.getBgColor(colorIndex));
     this->addChild(this->layerColor, 1);
@@ -111,8 +111,7 @@ void GameScreen::update(float dt)
         else if( s->getBoundingBox().intersectsRect(spot->getBoundingBox()))
         {
             //CCLOG("Game Over");
-            auto scene = GameOverScreen::createScene(level, GameScreen::numtry);
-            Director::getInstance()->replaceScene(scene);
+            gameOver();
         }
     }
     
@@ -127,8 +126,7 @@ void GameScreen::update(float dt)
             }
             else
             {
-                auto scene = GameOverScreen::createScene(level,GameScreen::numtry);
-                Director::getInstance()->replaceScene(scene);
+                gameOver();
             }
             kctoDelete.pushBack(kc);
         }
@@ -195,6 +193,33 @@ void GameScreen::addScore(int s)
     //CCLOG("percent %f , score %d, fromLevel %d",percent,score, u.getLevelScoreNeeded(level) );
     levelScoreBar->setPercent(percent);
 
+}
+
+void GameScreen::gameOver()
+{
+    spot->stopPlay();
+    for(auto s : slicers)
+    {
+        s->stopAllActions();
+    }
+    
+    for(auto p : particles)
+    {
+        p->stopAllActions();
+    }
+    
+    for (auto kc : killerCircles)
+    {
+        kc->stopAllActions();
+    }
+    
+    auto tintTo = TintTo::create(1.0f, 94.0f, 94.0f, 94.0f);
+    auto callGameOverScreen = CallFunc::create([&](){
+        auto scene = GameOverScreen::createScene(level, GameScreen::numtry);
+        Director::getInstance()->replaceScene(scene);
+    });
+    auto seq = Sequence::create(tintTo, callGameOverScreen, nullptr);
+    layerColor->runAction(seq);
 }
 
 void GameScreen::showHelpText(std::string msg)

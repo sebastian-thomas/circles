@@ -54,8 +54,9 @@ private:
     void setKillerCircles();
     
     void showHelpText(std::string msg);
-    
     void changeText(std::string msg);
+    
+    void gameOver();
     
     void addScore(int s);
 };

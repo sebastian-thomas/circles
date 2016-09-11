@@ -40,8 +40,8 @@ bool MenuScreen::init()
     this->setKeyboardEnabled(true);
     
     auto layerColor = new LayerColor;
-    //layerColor->initWithColor(u.getBgColor(RandomHelper::random_int(0,BGColors-1)));
-    layerColor->initWithColor(u.getBgColor(0));
+    layerColor->initWithColor(u.getBgColor(RandomHelper::random_int(0,BGColors-1)));
+    //layerColor->initWithColor(u.getBgColor(0));
     this->addChild(layerColor, 1);
     
     Vector<MenuItem*> menuItems;

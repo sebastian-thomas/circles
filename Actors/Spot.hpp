@@ -21,12 +21,14 @@ public:
     //GamePlay
     void addArea(int r);
     void reduceSize();
+    void stopPlay();
     
 private:
     int defSize;
     int currSize;
     cocos2d::Vec2 winSize;
     bool swiped;
+    bool play;
 
     
     void setToRadius(int r);
